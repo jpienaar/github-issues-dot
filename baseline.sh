@@ -64,7 +64,7 @@ gh api graphql --paginate -F owner='openxla' -F name='iree' -f query='
              }
              ... on IssueConnection {
                nodes {
-                 id
+                 number
                }
              }
            }
