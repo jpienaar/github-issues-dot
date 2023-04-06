@@ -1,0 +1,7 @@
+{
+	"maxTextSize": 99999999,
+	"securityLevel": "loose",
+	"flowchart" : {
+	  "rightAngles": true
+	}
+}

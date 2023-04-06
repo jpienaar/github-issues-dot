@@ -127,3 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+cross_referenced.json
+issues.json
+milestones.json
+node_modules
+out.mmd
+package.json
+package-lock.json
+
