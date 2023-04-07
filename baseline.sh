@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+GH_ORG="jpienaar"
+GH_NAME="github-issues-dot"
+
 # Get all milestones
 gh api graphql --paginate \
-   -F owner='openxla' -F name='iree' -f query='
+   -F owner=$GH_ORG -F name=$GH_NAME -f query='
     query ListMilestones($name: String!, $owner: String!, $endCursor: String) {
         repository(owner: $owner, name: $name) {
             milestones(first: 100, after: $endCursor) {
@@ -23,7 +26,7 @@ gh api graphql --paginate \
 ' > milestones.json
 
 # Get ~all issues
-gh api graphql --paginate -F owner='openxla' -F name='iree' -f query='
+gh api graphql --paginate -F owner=$GH_ORG -F name=$GH_NAME -f query='
   query ListIssues($name: String!, $owner: String!, $endCursor: String) {
      repository(owner: $owner, name: $name) {
        issues(first: 100, after: $endCursor) {
@@ -75,32 +78,33 @@ gh api graphql --paginate -F owner='openxla' -F name='iree' -f query='
 
 # Get cross references
 gh api graphql --paginate \
-   -F owner='openxla' -F name='iree' -f query='
-query($endCursor:String) {
-  repository(owner: "openxla", name: "iree") {
-    issues(first: 100, after: $endCursor) {
-      totalCount
-      pageInfo {
-        startCursor
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          number
-          timelineItems(first: 200, itemTypes: CROSS_REFERENCED_EVENT) {
-            totalCount
-            pageInfo {
-              startCursor
-              hasNextPage
-              endCursor
-            }
-            nodes {
-              ... on CrossReferencedEvent {
-                isCrossRepository
-                source {
-                  ... on Issue {
-                    number
+   -F owner=$GH_ORG -F name=$GH_NAME -f query='
+  query($owner: String!, $name: String!, $endCursor:String) {
+    repository(owner: $owner, name: $name) {
+      issues(first: 100, after: $endCursor) {
+        totalCount
+        pageInfo {
+          startCursor
+          hasNextPage
+          endCursor
+        }
+        edges {
+          node {
+            number
+            timelineItems(first: 200, itemTypes: CROSS_REFERENCED_EVENT) {
+              totalCount
+              pageInfo {
+                startCursor
+                hasNextPage
+                endCursor
+              }
+              nodes {
+                ... on CrossReferencedEvent {
+                  isCrossRepository
+                  source {
+                    ... on Issue {
+                      number
+                    }
                   }
                 }
               }
@@ -109,6 +113,5 @@ query($endCursor:String) {
         }
       }
     }
-  }
-}' > cross_referenced.json
+  }' > cross_referenced.json
 
